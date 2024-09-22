@@ -9,23 +9,17 @@ export function sortStrings(inArr, param = 'asc') {
 
     let outArr = [];
     Object.assign(outArr,inArr);
+
+    const locales = ["ru", "en"];
+    const options = { sensitivity: "variant", caseFirst: "upper" };
+    const collator = new Intl.Collator(locales, options);
+    const sortDesc = (a, b) => collator.compare(b, a);
+    const sortAsc = (a, b) => collator.compare(a, b);
     
-    let compareStrings = function(str1,str2){
-
-        let cmpReslt = str1.localeCompare(str2);
-        let cmpLowerCase = str1.toLowerCase().localeCompare(str2.toLowerCase());
-        if(cmpLowerCase < cmpReslt){
-            return -1;
-        } else if (cmpLowerCase > cmpReslt){
-            return 1;
-        } else {
-            return cmpReslt;
-        } 
-    }
-
-    outArr.sort(compareStrings);
     if (param == 'desc'){
-        outArr.reverse();
+        outArr.sort(sortDesc);
+    } else if (param == 'asc'){
+        outArr.sort(sortAsc);
     }
     return outArr;
 }
