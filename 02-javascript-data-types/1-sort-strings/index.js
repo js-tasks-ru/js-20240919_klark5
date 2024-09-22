@@ -7,7 +7,9 @@
  */
 export function sortStrings(inArr, param = 'asc') {
 
-    let outArr = inArr.map((a)=>a);
+    let outArr = [];
+    Object.assign(outArr,inArr);
+    
     let compareStrings = function(str1,str2){
 
         let cmpReslt = str1.localeCompare(str2);
