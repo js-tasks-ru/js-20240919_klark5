@@ -7,9 +7,6 @@
  */
 export function sortStrings(inArr, param = 'asc') {
 
-    let outArr = [];
-    Object.assign(outArr,inArr);
-
     const locales = ["ru", "en"];
     const options = { sensitivity: "variant", caseFirst: "upper" };
     const collator = new Intl.Collator(locales, options);
@@ -17,9 +14,8 @@ export function sortStrings(inArr, param = 'asc') {
     const sortAsc = (a, b) => collator.compare(a, b);
     
     if (param == 'desc'){
-        outArr.sort(sortDesc);
+        return [...inArr].sort(sortDesc);
     } else if (param == 'asc'){
-        outArr.sort(sortAsc);
+        return [...inArr].sort(sortAsc);
     }
-    return outArr;
 }
