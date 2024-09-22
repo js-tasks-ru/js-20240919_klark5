@@ -14,4 +14,5 @@ export const pick = (obj, ...fields) => {
     }
 
     return Object.fromEntries(resultArr)
+
 };
