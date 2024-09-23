@@ -6,8 +6,8 @@
  */
 export const omit = (obj, ...fields) => {
 
-    let resultArr = [];
-    let inArr = Object.entries(obj);
+    const resultArr = [];
+    const inArr = Object.entries(obj);
 
     for(let i of inArr){
         if( !fields.includes( i[0] ) ) resultArr.push(i);
