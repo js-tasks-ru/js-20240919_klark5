@@ -5,4 +5,13 @@
  */
 export function uniq(arr) {
 
+    if ( arr == [] || typeof arr != 'object' || arr===null ) return [];
+
+    let newArr = [];
+
+    for ( const i of arr){
+        if(!newArr.includes(i)) newArr.push(i);
+    }
+    
+    return newArr;
 }
