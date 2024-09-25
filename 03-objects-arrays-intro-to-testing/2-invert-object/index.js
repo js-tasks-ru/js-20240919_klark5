@@ -5,4 +5,16 @@
  */
 export function invertObj(obj) {
 
+    if ( typeof obj != 'object' || obj===null ) return;
+
+    const newObj = {};
+
+    for(const [key, value] of Object.entries(obj)){
+        if ( typeof value != 'object' || typeof value != 'undefined' ){
+            newObj[value.toString()] = key;
+        }
+    }
+
+    return newObj;
+
 }
