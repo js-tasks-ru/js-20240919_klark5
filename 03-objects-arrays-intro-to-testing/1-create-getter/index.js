@@ -11,7 +11,7 @@ export function createGetter(path) {
 
         if ( pathElems.length == 0 ) return
 
-        for ( let i of pathElems ){
+        for ( const i of pathElems ){
 
             if ( typeof obj != 'object' || obj===null ) return;
 
