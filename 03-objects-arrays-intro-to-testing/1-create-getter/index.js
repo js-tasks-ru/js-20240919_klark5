@@ -5,4 +5,18 @@
  */
 export function createGetter(path) {
 
+  const pathElems = path.split('.');
+
+  return (obj) => {
+
+    for (const i of pathElems) {
+
+      if (typeof obj != 'object' || obj === null) {return;}
+
+      if (Object.getOwnPropertyNames(obj).includes(i)) {obj = obj[i];}
+      else {return;}
+    }
+
+    return obj;
+  }
 }
