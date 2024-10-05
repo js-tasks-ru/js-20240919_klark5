@@ -37,30 +37,16 @@ export default class NotificationMessage {
    `;
   }
 
-  show(target = document.body) {
-    
-
-    //if (NotificationMessage.lastShownElement) {
-    //  console.log(NotificationMessage.lastShownElement)
-    //  NotificationMessage.lastShownElement.destroy()
-
-    //}
-    
-
-    //console.log(NotificationMessage.isShown)
+  show(target = document.body) {   
     target.append(this.element);
     NotificationMessage.lastShownElement = this;
     setTimeout(()=>this.destroy(), this.duration);
   }
 
   remove() {
-    console.log('remove method')
-
     this.element.remove();
   }
   destroy() {
-    console.log(this)
-    console.log('dest method')
     this.remove();
   }
 }
