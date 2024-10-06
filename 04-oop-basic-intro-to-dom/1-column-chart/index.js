@@ -91,18 +91,4 @@ export default class ColumnChart {
   destroy() {
     this.remove();
   }
-  /*_createTitle() {
-    const titleElement = document.createElement('div');
-    if (this.label) {
-            titleElement.className = 'column-chart__title';
-      titleElement.textContent = `Total ${this.label}`;
-
-      if (this.link) {
-        //toDo
-      }
-    }
-    return titleElement;
-  }
-
-  */
 }
