@@ -40,17 +40,15 @@ export default class NotificationMessage {
   show(target = document.body) {   
     target.append(this.element);
     NotificationMessage.lastShownElement = this;
-    setTimeout(()=>this.destroy(), this.duration);
+    this.timerID = setTimeout(()=>this.remove(), this.duration);
   }
 
   remove() {
-    if (this.element) {
-      this.element.remove();
-    }
+    clearTimeout(this.timerID);
+    this.element.remove();
   }
+
   destroy() {
     this.remove();
-    this.element = null;
-    this.subElements = {};
   }
 }
