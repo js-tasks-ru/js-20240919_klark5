@@ -33,8 +33,7 @@ export default class SortableTable extends SortableTableV1 {
 
   _setArrowElement(target) {
     this.prevSortingFieldId = target;
-    const allHeadersArr = [...this.element.querySelectorAll(`[data-id]`)];
-    allHeadersArr.filter((ele)=>ele.getAttribute("data-id")==target)[0].appendChild(this.arrowElement)
+    this.element.querySelector(`[data-id]`, target).appendChild(this.arrowElement);
   }
 
   _setDefaultArrowElement() {
@@ -70,7 +69,7 @@ export default class SortableTable extends SortableTableV1 {
 
   destroy(){
     super.destroy();
-    
+    this.element.querySelector('[data-element]', 'header').removeEventListener("pointerdown", this._headerOnMouseDownHandler.bind(this));
   }
 
 
