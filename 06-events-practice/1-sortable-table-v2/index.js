@@ -1,5 +1,5 @@
 import SortableTableV1 from "../../05-dom-document-loading/2-sortable-table-v1/index.js";
-
+//debugger
 export default class SortableTable extends SortableTableV1 {
 
   prevSortingFieldId;
@@ -33,7 +33,8 @@ export default class SortableTable extends SortableTableV1 {
 
   _setArrowElement(target) {
     this.prevSortingFieldId = target;
-    [...this.element.querySelectorAll(`[data-id]`)].filter((ele)=>ele.getAttribute('data-id') == target)[0].appendChild(this.arrowElement);
+    const allHeadersArr = [...this.element.querySelectorAll(`[data-id]`)];
+    allHeadersArr.filter((ele)=>ele.getAttribute("data-id")==target)[0].appendChild(this.arrowElement)
   }
 
   _setDefaultArrowElement() {
@@ -41,7 +42,7 @@ export default class SortableTable extends SortableTableV1 {
   }
 
   _headerOnMouseDownHandler(event) {
-    
+    console.log('_headerOnMouseDownHandler');
     if (event.target.getAttribute('data-sortable') == 'false') {
       return;
     }
@@ -61,13 +62,16 @@ export default class SortableTable extends SortableTableV1 {
   }
 
   _createSortEventListners() {
+    console.log('_createSortEventListners');
   
-    this._header = [...this.element.querySelectorAll('[data-element]')].filter((ele)=>ele.getAttribute('data-element') == 'header')[0];
-    this._header.addEventListener("pointerdown", this._headerOnMouseDownHandler.bind(this));
+    const header = this.element.querySelector('[data-element]', 'header');
+    header.addEventListener("pointerdown", this._headerOnMouseDownHandler.bind(this));
   }
 
-  destroy() {
+  destroy(){
     super.destroy();
-    this._header.removeEventListener("pointerdown", this._headerOnMouseDownHandler.bind(this));
+    
   }
+
+
 }
