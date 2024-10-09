@@ -1,4 +1,4 @@
-export default class SortableTable {
+export class SortableTable {
 
   constructor(headerConfig = [], data = []) {
 
@@ -126,6 +126,8 @@ export default class SortableTable {
   }
 }
 
-export class SortableTableV1 extends SortableTable{
-
+export default  class SortableTableV1 extends SortableTable{
+  constructor(headerConfig = [], data = []) {
+    super(headerConfig,data)
+  }
 }
