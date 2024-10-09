@@ -1,4 +1,4 @@
-export default class SortableTable {
+export class SortableTable {
 
   constructor(headerConfig = [], data = []) {
 
@@ -46,7 +46,7 @@ export default class SortableTable {
   _createHeader() {
 
     return this.headerConfig.map(({id, title, sortable})=>`
-      <div class="sortable-table__cell" data-id="${id}}" data-sortable="${sortable}" data-order="">
+      <div class="sortable-table__cell" data-id="${id}" data-sortable="${sortable}" data-order="">
         <span>${title}</span>
       </div>`);
 
@@ -123,5 +123,11 @@ export default class SortableTable {
 
   destroy() {
     this.remove();
+  }
+}
+
+export default  class SortableTableV1 extends SortableTable{
+  constructor(headerConfig = [], data = []) {
+    super(headerConfig,data)
   }
 }
