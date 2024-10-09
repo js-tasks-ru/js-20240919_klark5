@@ -71,7 +71,6 @@ export default class SortableTable extends SortableTableV1 {
   }
 
   _createSortEventListners() {
-    console.log('_createSortEventListners');
 
     this._header.addEventListener("pointerdown", this._headerOnMouseDownHandler.bind(this));
   }
