@@ -1,4 +1,4 @@
-import SortableTableV1 from "../../05-dom-document-loading/2-sortable-table-v1/index.js";
+import {default as SortableTableV1} from "../../05-dom-document-loading/2-sortable-table-v1/index.js";
 
 export default class SortableTable extends SortableTableV1 {
 
@@ -12,11 +12,11 @@ export default class SortableTable extends SortableTableV1 {
 
     super(headersConfig, data);
     this.sorted = sorted;
-    this.arrowElement = this._createArrow();
+    this.arrowElement = this._createArrowElement();
     this._setDefaultArrowElement();
   }
 
-  _createArrow() {
+  _createArrowElement() {
     const arrowElement = document.createElement('span');
     arrowElement.className = "sortable-table__sort-arrow";
     arrowElement.setAttribute('data-element', "arrow");
@@ -28,74 +28,52 @@ export default class SortableTable extends SortableTableV1 {
     return `<span class="sort-arrow"></span>`;
   }
 
-  _setArrowElement(target) {    
-    SortableTable.findSpecChildElements(this._header, "data-id", target)[0].appendChild(this.arrowElement);
-  }
-
   _setDefaultArrowElement() {
     this._header.firstElementChild.appendChild(this.arrowElement);
-    this.prevSortingFieldId = "";
-  }
-
-  _isPrevFieldWasUnsortable() {
-
-    const prevSortElemArr = SortableTable.findSpecChildElements(this._header, "data-id", this.prevSortingFieldId);
-    if (prevSortElemArr.length == 0) {
-      return true;
-    } else if (prevSortElemArr[0].hasAttribute("data-sortable")) {
-      return prevSortElemArr[0].getAttribute("data-sortable") == "false" ? true : false;
-    } else {return true;}
   }
 
   _headerOnMouseDownHandler(event) {
 
-    const currentSortingField = event.target.closest('[class]', 'sortable-table__cell');
-    const currentSortingFieldId = currentSortingField.getAttribute('data-id');
+    const currentSortingFieldElement = event.target.closest('[class]', 'sortable-table__cell');
 
-    if (currentSortingField.getAttribute('data-sortable') == 'false') {
-      this.prevSortingFieldId = currentSortingFieldId;
+    if (currentSortingFieldElement.getAttribute('data-sortable') == 'false') {
+      this._prevSortingFieldElement = currentSortingFieldElement;
       return;
     }
-    
-    const isPrevFieldWasUnsortable = this._isPrevFieldWasUnsortable();    
-    
-    if (this.sortingDirection == 'asc' && (this.prevSortingFieldId == currentSortingFieldId || isPrevFieldWasUnsortable)) {
+
+    const isPrevFieldWasUnsortable = this._prevSortingFieldElement.dataset.sortable == "false" ? true : false;
+           
+    if (this.sortingDirection == 'asc' && 
+       (this._prevSortingFieldElement.dataset.id == currentSortingFieldElement.dataset.id || 
+        isPrevFieldWasUnsortable)) 
+    {
       this.sortingDirection = 'desc';
     } else {
       this.sortingDirection = 'asc';
     }
 
-    this.prevSortingFieldId = currentSortingFieldId;
-    this.sort(currentSortingFieldId, this.sortingDirection);
-    this._setArrowElement(currentSortingFieldId);
+    this._prevSortingFieldElement = currentSortingFieldElement;
+    this.sort(currentSortingFieldElement.dataset.id, this.sortingDirection);
+    currentSortingFieldElement.appendChild(this.arrowElement);
   }
 
   _createSortEventListners() {
-
-    this._header.addEventListener("pointerdown", this._headerOnMouseDownHandler.bind(this));
-  }
-
-  static findSpecChildElements(parentElement, attribute, value) {
-    const outValidChildElemntsArr = [];
-    for (let elem of [...parentElement.children]) {
-      if (elem.matches(`[${attribute}$="${value}"]`)) {outValidChildElemntsArr.push(elem);}
-    }
-
-    return outValidChildElemntsArr;
+    this._header.addEventListener("pointerdown", this._varHeaderOnMouseDownHandler);
   }
 
   render() {
-
     if (this._header) {
       this._destroyEventListners();
     }
     super.render();
     this._header = this.element.firstElementChild;
+    this._prevSortingFieldElement = {dataset: {"sortable": "false", "id": null}};
+    this._varHeaderOnMouseDownHandler = this._headerOnMouseDownHandler.bind(this);
     this._createSortEventListners();
   }
 
   _destroyEventListners() {
-    this._header.removeEventListener("pointerdown", this._headerOnMouseDownHandler.bind(this));
+    this._header.removeEventListener("pointerdown", this._varHeaderOnMouseDownHandler);
   }
 
   destroy() {
