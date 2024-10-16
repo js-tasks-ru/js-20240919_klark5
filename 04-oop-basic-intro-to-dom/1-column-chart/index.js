@@ -20,6 +20,7 @@ export default class ColumnChart {
     this.formatHeading = formatHeading;
     
     this.element = this._createElement();
+    this.subElements = this._getSubElements();
 
   }
   
@@ -33,23 +34,30 @@ export default class ColumnChart {
       return firstElementChild;
     }
     
-    return element;
+    return element.firstElementChild;
   }
+
   _createTemplate() {
     return `
-    <div class="column-chart" style="--chart-height: 50">
-      <div class="column-chart__title">
+    <div class="column-chart" style="--chart-height: ${this.chartHeight}">
+     ${this._createInnerTemplate()}
+    </div>
+    `;
+  }
+
+  _createInnerTemplate() {
+    return `
+    <div class="column-chart__title">
         Total ${this.label}
         ${this._createLink()}
-      </div>
-      <div class="column-chart__container">
+    </div>
+    <div class="column-chart__container">
         <div data-element="header" class="column-chart__header">
         ${this.formatHeading(this.value)}
         </div>
         <div data-element="body" class="column-chart__chart">
           ${this._createChartTemplate()}
         </div>
-      </div>
     </div>
     `;
   }
@@ -79,9 +87,27 @@ export default class ColumnChart {
     return '';
   }
 
+  _getSubElements() {
+
+    const result = {};
+    const elements = this.element.querySelectorAll('[data-element]');
+
+    for (const subElement of elements) {
+      const name = subElement.dataset.element;
+
+      result[name] = subElement;
+    }
+
+    return result;
+  }
+
   update(newData) {
+
     this.data = newData;
-    this.element.innerHTML = this._createTemplate();
+    this.value = newData.reduce((a, b)=>a + b, 0);
+    
+    this.subElements.header.innerHTML = this.formatHeading(this.value);
+    this.subElements.body.innerHTML = this._createChartTemplate();
   }
 
   remove() {

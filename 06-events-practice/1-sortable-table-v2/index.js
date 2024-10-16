@@ -11,9 +11,16 @@ export default class SortableTable extends SortableTableV1 {
   } = {}) {
 
     super(headersConfig, data);
+    this._header = this.element.firstElementChild;
     this.sorted = sorted;
+
+    this._prevSortingFieldElement = {dataset: {"sortable": "false", "id": null}};
+    
     this.arrowElement = this._createArrowElement();
     this._setDefaultArrowElement();
+
+    this._varHeaderOnMouseDownHandler = this._headerOnMouseDownHandler.bind(this);
+    this._createEventListners();
   }
 
   _createArrowElement() {
@@ -32,44 +39,37 @@ export default class SortableTable extends SortableTableV1 {
     this._header.firstElementChild.appendChild(this.arrowElement);
   }
 
-  _headerOnMouseDownHandler(event) {
+  _getCurrentSortFieldAndArrow(event) {
+    this._currentSortingFieldElement = event.target.closest('[class]', 'sortable-table__cell');
 
-    const currentSortingFieldElement = event.target.closest('[class]', 'sortable-table__cell');
-
-    if (currentSortingFieldElement.getAttribute('data-sortable') == 'false') {
-      this._prevSortingFieldElement = currentSortingFieldElement;
+    if (this._currentSortingFieldElement.getAttribute('data-sortable') == 'false') {
+      this._prevSortingFieldElement = this._currentSortingFieldElement;
       return;
     }
 
     const isPrevFieldWasUnsortable = this._prevSortingFieldElement.dataset.sortable == "false" ? true : false;
            
     if (this.sortingDirection == 'asc' && 
-       (this._prevSortingFieldElement.dataset.id == currentSortingFieldElement.dataset.id || 
+       (this._prevSortingFieldElement.dataset.id == this._currentSortingFieldElement.dataset.id || 
         isPrevFieldWasUnsortable)) 
     {
       this.sortingDirection = 'desc';
     } else {
       this.sortingDirection = 'asc';
     }
-
-    this._prevSortingFieldElement = currentSortingFieldElement;
-    this.sort(currentSortingFieldElement.dataset.id, this.sortingDirection);
-    currentSortingFieldElement.appendChild(this.arrowElement);
+    this._currentSortingFieldElement.appendChild(this.arrowElement);
+    this._prevSortingFieldElement = this._currentSortingFieldElement;
   }
 
-  _createSortEventListners() {
+  _headerOnMouseDownHandler(event) {
+
+    this._getCurrentSortFieldAndArrow(event);
+    super.sort(this._currentSortingFieldElement.dataset.id, this.sortingDirection);
+
+  }
+
+  _createEventListners() {
     this._header.addEventListener("pointerdown", this._varHeaderOnMouseDownHandler);
-  }
-
-  render() {
-    if (this._header) {
-      this._destroyEventListners();
-    }
-    super.render();
-    this._header = this.element.firstElementChild;
-    this._prevSortingFieldElement = {dataset: {"sortable": "false", "id": null}};
-    this._varHeaderOnMouseDownHandler = this._headerOnMouseDownHandler.bind(this);
-    this._createSortEventListners();
   }
 
   _destroyEventListners() {
