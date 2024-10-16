@@ -20,7 +20,7 @@ export default class ColumnChart {
     this.formatHeading = formatHeading;
     
     this.element = this._createElement();
-    this.subElements = this._getSubElements(this.element);
+    this.subElements = this._getSubElements();
 
   }
   
@@ -34,7 +34,7 @@ export default class ColumnChart {
       return firstElementChild;
     }
     
-    return element;
+    return element.firstElementChild;
   }
 
   _createTemplate() {
@@ -87,10 +87,10 @@ export default class ColumnChart {
     return '';
   }
 
-  _getSubElements(element) {
+  _getSubElements() {
 
     const result = {};
-    const elements = element.querySelectorAll('[data-element]');
+    const elements = this.element.querySelectorAll('[data-element]');
 
     for (const subElement of elements) {
       const name = subElement.dataset.element;
@@ -108,7 +108,6 @@ export default class ColumnChart {
     
     this.subElements.header.innerHTML = this.formatHeading(this.value);
     this.subElements.body.innerHTML = this._createChartTemplate();
-    this.subElements = this._getSubElements(this.element);
   }
 
   remove() {
