@@ -4,8 +4,16 @@ export default class SortableTable {
 
     this.headerConfig = headerConfig;
     this.data = data;
+    
+    this._createElement();
+    this.subElements = this._getSubElements(this.element);
+  }
+
+  _createElement() {
     this.element = document.createElement('div');
-    this.render();
+    this.element.className = "sortable-table";
+    this.element.innerHTML = this._createTemplate();
+
   }
 
   _getSubElements(element) {
@@ -78,10 +86,10 @@ export default class SortableTable {
     return this.data.map((row)=>this._createRow(row));
   }
 
-  sort(field, order) {
+  sort(id, order) {
 
-    const sortingHeader = this.headerConfig.filter(conf => conf['id'] == field)[0];
-    let sortDesc, sortAsc;
+    const sortingHeader = this.headerConfig.filter(conf => conf['id'] == id)[0];
+    let sortDesc; let sortAsc;
 
     if (sortingHeader['sortType'] == 'string') {
 
@@ -89,13 +97,13 @@ export default class SortableTable {
       const options = { sensitivity: "variant", caseFirst: "upper" };
       const collator = new Intl.Collator(locales, options);
 
-      sortDesc = (a, b) => collator.compare(b[field], a[field]);
-      sortAsc = (a, b) => collator.compare(a[field], b[field]);
+      sortDesc = (a, b) => collator.compare(b[id], a[id]);
+      sortAsc = (a, b) => collator.compare(a[id], b[id]);
 
     } else if (sortingHeader['sortType'] == 'number') {
 
-      sortDesc = (a, b) => {return b[field] - a[field]};
-      sortAsc = (a, b) => {return a[field] - b[field]};
+      sortDesc = (a, b) => {return b[id] - a[id];};
+      sortAsc = (a, b) => {return a[id] - b[id];};
 
     }
 
@@ -104,14 +112,16 @@ export default class SortableTable {
     } else if (order == 'asc') {
       this.data = [...this.data].sort(sortAsc);
     }
-    this.render();
+    this._updateFields();
+  }
+
+  _updateFields() {
+    this.subElements.header.innerHTML = this._createHeader().join('');
+    this.subElements.body.innerHTML = this._createData().join('');
   }
 
   render() {
-
-    this.element.className = "sortable-table";
-    this.element.innerHTML = this._createTemplate();
-    this.subElements = this._getSubElements(this.element);
+    this._updateFields();
   }
 
   remove() {
