@@ -45,24 +45,51 @@ export default class ProductForm {
   }
 
   _deleteImageClickHanlder(event) {
-    const imageToDeleteElement = event.target.closest('[class="sortable-list"]');
-    imageToDeleteElement.remove();
+    if (event.target.dataset.deleteHandle) {
+      const imageToDeleteElement = event.target.closest('[class="sortable-list"]');
+      imageToDeleteElement.remove();
+    }
   }
 
-  _uploadImageButtonClickHandler(event) {
-    //TODO
+
+  _uploadImageButtonClickHandler() {
+
     const url = new URL('https://api.imgur.com');
     url.pathname = '3/image';
-    const f = event.target.files[0];
+    
+    const form = document.createElement('form');
+    const input = document.createElement('input');
+    input.name = 'image';
+    input.type = 'file';
+    form.append(input);
 
-    fetchJson(url, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`
-      },
-      body: f,        
-    }).then(console.log);
+    const handler = (e) => {debugger;
+      const source = e.target.files[0].name;
+      const formData = new FormData(form);
+      fetchJson(url, {
+        method: "POST",
+        headers: {
+          'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`
+        },
+        body: formData,        
+      }).then((response)=>{
+
+        let toAdd = document.createElement('div');
+        toAdd.innerHTML = this._createImageTemplate({
+          url: response.data.link,
+          source: source
+        });
+        toAdd = toAdd.firstElementChild;
+  
+        this.element.querySelector('#imageListContainer').appendChild(toAdd);
+      }).finally(()=>{
+        input.removeEventListener('change', handler);
+      });
+    };
+
+    input.addEventListener('change', handler);
+    
+    input.click(); 
 
   }
 
@@ -167,7 +194,7 @@ export default class ProductForm {
             <input type="hidden" name="source" value="${imageElement.source}">
             <span>
               <img src="icon-grab.svg" data-grab-handle="" alt="grab">
-              <img class="sortable-table__cell-img" alt="Image" src="${imageElement.url}">
+              <img class="sortable-table__cell-img" alt="Image" referrerpolicy="no-referrer" src="${imageElement.url}">
               <span>${imageElement.source}</span>
             </span>
             <button type="button">
