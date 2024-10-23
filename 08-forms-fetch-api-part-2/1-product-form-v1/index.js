@@ -123,7 +123,7 @@ export default class ProductForm {
     const catArr = [];
     for (const category of respJSON) {
       catArr.push(category.subcategories.map((subcategory) => (
-        `<option value="${subcategory.id}">${category.title} &gt; ${subcategory.title}</option>`
+        `<option value="${escapeHtml(subcategory.id)}">${escapeHtml(category.title)} &gt; ${escapeHtml(subcategory.title)}</option>`
       )).join(''));
     }
 
@@ -190,12 +190,12 @@ export default class ProductForm {
 
   _createImageTemplate(imageElement) {
     return `<ul class="sortable-list"><li class="products-edit__imagelist-item sortable-list__item" style="">
-            <input type="hidden" name="url" value="${imageElement.url}">
-            <input type="hidden" name="source" value="${imageElement.source}">
+            <input type="hidden" name="url" value="${escapeHtml(imageElement.url)}">
+            <input type="hidden" name="source" value="${escapeHtml(imageElement.source)}">
             <span>
               <img src="icon-grab.svg" data-grab-handle="" alt="grab">
-              <img class="sortable-table__cell-img" alt="Image" referrerpolicy="no-referrer" src="${imageElement.url}">
-              <span>${imageElement.source}</span>
+              <img class="sortable-table__cell-img" alt="Image" referrerpolicy="no-referrer" src="${escapeHtml(imageElement.url)}">
+              <span>${escapeHtml(imageElement.source)}</span>
             </span>
             <button type="button">
               <img src="icon-trash.svg" data-delete-handle="delete" alt="delete">
