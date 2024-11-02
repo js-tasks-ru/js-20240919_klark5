@@ -118,7 +118,7 @@ export default class RangePicker {
 
   _initDateGridTemplate(date) {
 
-    let currentDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    const currentDate = new Date(date.getFullYear(), date.getMonth(), 1);
     const resGrid = []; const daysInMonth = this.daysInMonths(currentDate.getFullYear(), currentDate.getMonth());
     let selection = ''; let startFrom = `style="--start-from: ${currentDate.getDay() == 0 ? "7" : currentDate.getDay()}"`;
     let zeroMonth = ''; let zeroDate = '';
