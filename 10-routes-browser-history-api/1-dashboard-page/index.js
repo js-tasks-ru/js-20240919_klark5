@@ -114,6 +114,7 @@ export default class Page {
   }
 
   destroy() {
+    this.element.removeEventListener('date-select', this._dataSelectHandler);
     this.remove();
   }
 }
