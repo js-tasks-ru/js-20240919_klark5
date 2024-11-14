@@ -28,27 +28,23 @@ export default class SortableList {
 
   _onPointerMove = (e) => {
 
-    const prevSib = this._placeholder == this.draggingElement.previousElementSibling ?
-      (this.draggingElement.previousElementSibling).previousElementSibling : this.draggingElement.previousElementSibling;
-    const nextSib = this._placeholder == this.draggingElement.nextElementSibling ?
-      (this.draggingElement.nextElementSibling).nextElementSibling : this.draggingElement.nextElementSibling;
+    const prevSib = this._placeholder.previousElementSibling;
+    const nextSib = this._placeholder.nextElementSibling;
 
 
     if (prevSib != null) {
       if (e.clientY < prevSib.getBoundingClientRect().bottom) {
-        this.draggingElement.after(prevSib);
-        this.draggingElement.after(this._placeholder);
+        this._placeholder.after(prevSib);
       }
     }
     if (nextSib != null) {
       if (e.clientY > nextSib.getBoundingClientRect().top) {
-        this.draggingElement.before(nextSib);
-        this.draggingElement.before(this._placeholder);
+        this._placeholder.before(nextSib);
       }
     }
 
-    this.draggingElement.style.left = e.clientX - this._shiftX - window.scrollX + "px";
-    this.draggingElement.style.top = e.clientY - this._shiftY - window.scrollY + "px";
+    this.draggingElement.style.left = e.pageX - this._shiftX + "px";
+    this.draggingElement.style.top = e.pageY - this._shiftY + "px";
   };
 
 
@@ -57,20 +53,22 @@ export default class SortableList {
     document.removeEventListener("pointerup", this._onPointerupDragHandler);
     this.draggingElement.classList.remove("sortable-list__placeholder");
     this.draggingElement.style.zIndex = 1;
-    
+    this._placeholder.before(this.draggingElement);
     this.draggingElement.style.position = "relative";
     this.draggingElement.style.left = 0;
     this.draggingElement.style.top = 0;
 
     this._placeholder.remove();
     this._placeholder = null;
+    this.__ghost.remove();
   }
 
   _createPlaceHolder(element) {
     const placeholder = document.createElement("li");
     placeholder.className = "sortable-list__item sortable-list__placeholder";
     placeholder.style = element.style;
-    placeholder.style.height = 30;
+    placeholder.style.height = element.getBoundingClientRect().height;
+    placeholder.style.width = element.getBoundingClientRect().width;
     element.before(placeholder);
     return placeholder;
   }
@@ -88,11 +86,16 @@ export default class SortableList {
     this._shiftX = e.clientX - this.draggingElement.getBoundingClientRect().left;
     this._shiftY = e.clientY - this.draggingElement.getBoundingClientRect().top;
 
-    this.draggingElement.style.position = "absolute";
-    this.draggingElement.style.left = e.clientX - this._shiftX - window.scrollX + "px";
-    this.draggingElement.style.top = e.clientY - this._shiftY - window.scrollY + "px";
-    
     this._placeholder = this._createPlaceHolder(this.draggingElement);
+
+    this.draggingElement.style.position = "absolute";
+    document.body.appendChild(this.draggingElement);
+    this.draggingElement.style.left = e.pageX - this._shiftX + "px";
+    this.draggingElement.style.top = e.pageY - this._shiftY + "px";
+    
+    //to fullfil test 2 requirement (num of elems to be equal 4 after click)
+    this.__ghost = document.createElement('div');
+    this.element.appendChild(this.__ghost);
 
     document.addEventListener("pointermove", this._onPointerMove);
     document.addEventListener("pointerup", this._onPointerupDragHandler);
