@@ -46,7 +46,7 @@ export default class ProductForm {
 
   _deleteImageClickHanlder(event) {
     if (event.target.dataset.deleteHandle) {
-      const imageToDeleteElement = event.target.closest('[class="sortable-list"]');
+      const imageToDeleteElement = event.target.closest('[class="products-edit__imagelist-item sortable-list__item"]');
       imageToDeleteElement.remove();
     }
   }
@@ -63,7 +63,7 @@ export default class ProductForm {
     input.type = 'file';
     form.append(input);
 
-    const handler = (e) => {debugger;
+    const handler = (e) => {
       const source = e.target.files[0].name;
       const formData = new FormData(form);
       fetchJson(url, {
@@ -146,8 +146,8 @@ export default class ProductForm {
       </div>
       <div class="form-group form-group__wide" data-element="sortable-list-container">
         <label class="form-label">Фото</label>
-        <div data-element="imageListContainer" id="imageListContainer">
-          
+        <div data-element="imageListContainer">
+          <ul class="sortable-list" id="imageListContainer"></ul>
         </div>
         <button type="button" name="uploadImage" id="uploadImage" class="button-primary-outline"><span>Загрузить</span></button>
       </div>
@@ -189,7 +189,7 @@ export default class ProductForm {
   }
 
   _createImageTemplate(imageElement) {
-    return `<ul class="sortable-list"><li class="products-edit__imagelist-item sortable-list__item" style="">
+    return `<li class="products-edit__imagelist-item sortable-list__item" style="">
             <input type="hidden" name="url" value="${escapeHtml(imageElement.url)}">
             <input type="hidden" name="source" value="${escapeHtml(imageElement.source)}">
             <span>
@@ -199,7 +199,7 @@ export default class ProductForm {
             </span>
             <button type="button">
               <img src="icon-trash.svg" data-delete-handle="delete" alt="delete">
-            </button></li></ul>
+            </button></li>
      `;
   }
 
@@ -218,7 +218,7 @@ export default class ProductForm {
     this.form.elements["status"].value = this.productObj.status;
 
     const imageContainer = this.element.querySelector(`[data-element="imageListContainer"]`);
-    imageContainer.innerHTML = this._createImagesTemplate();
+    imageContainer.firstElementChild.innerHTML = this._createImagesTemplate();
   }
 
   async _getProduct() {
